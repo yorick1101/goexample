@@ -1,41 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
+	"syscall"
 )
 
 func main() {
-	ipCmd := exec.Command("ipconfig")
-	//hold bytes
-	ipOut, err := ipCmd.Output()
 
+	binary, err := exec.LookPath("ls")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(">ipconfig", string(ipOut))
+	//Note that the first argument should be the program name.
+	args := []string{"ls", "-a", "-l", "-h"}
 
-	grepCmd := exec.Command("grep", "hello")
+	env := os.Environ()
 
-	grepIn, _ := grepCmd.StdinPipe()
-	grepOut, _ := grepCmd.StdoutPipe()
-	grepCmd.Start()
-	grepIn.Write([]byte("hello grep \n goodbye grep"))
-	grepIn.Close()
-
-	grepBytes, _ := ioutil.ReadAll(grepOut)
-	grepCmd.Wait()
-
-	fmt.Println("grep hello:", string(grepBytes))
-
-	lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
-	lsOut, err := lsCmd.Output()
-	if err != nil {
-		panic(err)
+	execErr := syscall.Exec(binary, args, env)
+	if execErr != nil {
+		panic(execErr)
 	}
-
-	fmt.Println(string(lsOut))
 
 }
