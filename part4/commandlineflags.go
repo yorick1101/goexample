@@ -14,7 +14,7 @@ func main() {
 	var svar string
 	flag.StringVar(&svar, "svar", "bar", "a string var")
 	flag.Parse()
-
+	// flag package requires all flags to appear before positional arguments
 	//display the flags have been set
 	fmt.Println(flag.NFlag())
 	fmt.Println("word:", *wordPtr)
